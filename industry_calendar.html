@@ -1,0 +1,813 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Euromonitor Industry Calendar FY26–27</title>
+<link href="https://fonts.googleapis.com/css2?family=DM+Serif+Display:ital@0;1&family=DM+Sans:opsz,wght@9..40,300;9..40,400;9..40,500;9..40,600&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --navy:      #1a2744;
+    --navy-mid:  #243457;
+    --teal:      #0e7c7b;
+    --teal-lt:   #e8f5f5;
+    --amber:     #e8a020;
+    --bg:        #f4f5f7;
+    --white:     #ffffff;
+    --border:    #dde1e9;
+    --text:      #1a2744;
+    --muted:     #6b7694;
+    --radius:    8px;
+
+    /* Office colours */
+    --chicago:     #2E4057;
+    --london:      #C0392B;
+    --saopauloC:   #27AE60;
+    --mexicoC:     #E67E22;
+    --santiagoC:   #8E44AD;
+    --dubaiC:      #C9A800;
+    --capetownC:   #E05A8A;
+    --dusseldorfC: #2E86C1;
+    --vilniusC:    #16A085;
+    --bengaluruC:  #E74C3C;
+    --shanghaiC:   #A93226;
+    --singaporeC:  #1ABC9C;
+    --tokyoC:      #E84393;
+    --seoulC:      #3498DB;
+    --otherC:      #95A5A6;
+  }
+
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+
+  body {
+    font-family: 'DM Sans', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    min-height: 100vh;
+  }
+
+  /* ── Header ────────────────────────────────────────────────── */
+  .cal-header {
+    background: var(--navy);
+    padding: 20px 28px 0;
+    display: flex;
+    align-items: flex-end;
+    gap: 28px;
+    flex-wrap: wrap;
+  }
+  .cal-title-block { padding-bottom: 18px; flex: 1; min-width: 200px; }
+  .cal-eyebrow {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--amber);
+    margin-bottom: 4px;
+  }
+  .cal-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 22px;
+    color: #fff;
+    line-height: 1.2;
+  }
+  .cal-title em { font-style: italic; color: var(--amber); }
+
+  /* ── Nav tabs ───────────────────────────────────────────────── */
+  .cal-nav {
+    display: flex;
+    align-items: flex-end;
+    gap: 2px;
+    flex-wrap: wrap;
+    padding-bottom: 0;
+  }
+  .nav-btn {
+    background: rgba(255,255,255,0.08);
+    border: none;
+    color: rgba(255,255,255,0.55);
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 500;
+    padding: 7px 13px 9px;
+    border-radius: 6px 6px 0 0;
+    cursor: pointer;
+    transition: all .15s;
+    white-space: nowrap;
+  }
+  .nav-btn:hover { background: rgba(255,255,255,0.15); color: #fff; }
+  .nav-btn.active {
+    background: var(--bg);
+    color: var(--navy);
+    font-weight: 600;
+  }
+
+  /* ── Toolbar ───────────────────────────────────────────────── */
+  .toolbar {
+    background: var(--white);
+    border-bottom: 1px solid var(--border);
+    padding: 12px 28px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+  }
+  .toolbar-label {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: var(--muted);
+    margin-right: 2px;
+    white-space: nowrap;
+  }
+  .filter-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    padding: 5px 12px;
+    border-radius: 20px;
+    border: 1.5px solid transparent;
+    font-family: 'DM Sans', sans-serif;
+    font-size: 11px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all .15s;
+    white-space: nowrap;
+  }
+  .filter-btn .dot {
+    width: 8px; height: 8px;
+    border-radius: 50%;
+    flex-shrink: 0;
+  }
+  .filter-btn.inactive {
+    background: #f0f2f7;
+    color: var(--muted);
+    border-color: transparent;
+  }
+  .filter-btn.inactive .dot { opacity: 0.4; }
+  .filter-btn.active {
+    background: white;
+    border-color: currentColor;
+  }
+  .filter-all {
+    background: var(--navy) !important;
+    color: #fff !important;
+    border-color: var(--navy) !important;
+  }
+  .filter-all .dot { background: var(--amber) !important; }
+  .sep { width: 1px; height: 20px; background: var(--border); flex-shrink: 0; }
+
+  /* ── Main layout ───────────────────────────────────────────── */
+  .main { padding: 20px 28px; }
+
+  /* ── Month nav ─────────────────────────────────────────────── */
+  .month-nav {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+  }
+  .month-arrow {
+    width: 30px; height: 30px;
+    display: flex; align-items: center; justify-content: center;
+    border: 1.5px solid var(--border);
+    border-radius: 50%;
+    background: white;
+    cursor: pointer;
+    font-size: 14px;
+    color: var(--muted);
+    transition: all .15s;
+    flex-shrink: 0;
+    user-select: none;
+  }
+  .month-arrow:hover { border-color: var(--navy); color: var(--navy); }
+  .month-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 20px;
+    color: var(--navy);
+    min-width: 180px;
+  }
+  .month-subtitle {
+    font-size: 11px;
+    color: var(--muted);
+    margin-left: 4px;
+  }
+  .event-count-badge {
+    margin-left: auto;
+    background: var(--teal);
+    color: white;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 12px;
+    letter-spacing: 0.05em;
+  }
+
+  /* ── Calendar grid ─────────────────────────────────────────── */
+  .cal-grid {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .cal-days-header {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    background: var(--navy);
+  }
+  .day-name {
+    text-align: center;
+    padding: 9px 4px;
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: rgba(255,255,255,0.6);
+  }
+  .cal-weeks { }
+  .cal-week {
+    display: grid;
+    grid-template-columns: repeat(7, 1fr);
+    border-top: 1px solid var(--border);
+  }
+  .cal-cell {
+    border-right: 1px solid var(--border);
+    padding: 6px 5px 8px;
+    min-height: 90px;
+    position: relative;
+    vertical-align: top;
+  }
+  .cal-cell:last-child { border-right: none; }
+  .cal-cell.other-month .day-num { color: #ccc; }
+  .cal-cell.today { background: #fffbf0; }
+  .cal-cell.today .day-num {
+    background: var(--amber);
+    color: white;
+    width: 22px; height: 22px;
+    border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+  }
+  .day-num {
+    font-size: 11px;
+    font-weight: 600;
+    color: var(--navy);
+    margin-bottom: 4px;
+    line-height: 1;
+  }
+
+  /* ── Event chips ───────────────────────────────────────────── */
+  .event-chip {
+    display: block;
+    font-size: 9.5px;
+    font-weight: 500;
+    padding: 2px 5px;
+    border-radius: 3px;
+    margin-bottom: 2px;
+    cursor: pointer;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    color: white;
+    transition: opacity .1s, transform .1s;
+    line-height: 1.4;
+  }
+  .event-chip:hover { opacity: 0.85; transform: scale(1.02); }
+  .more-chip {
+    font-size: 9px;
+    color: var(--muted);
+    font-weight: 600;
+    padding: 1px 4px;
+    cursor: pointer;
+  }
+  .more-chip:hover { color: var(--navy); text-decoration: underline; }
+
+  /* ── TBD strip ─────────────────────────────────────────────── */
+  .tbd-section {
+    margin-top: 20px;
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: var(--radius);
+    overflow: hidden;
+  }
+  .tbd-header {
+    background: var(--navy-mid);
+    padding: 10px 16px;
+    display: flex; align-items: center; gap: 8px;
+  }
+  .tbd-header-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 14px;
+    color: white;
+  }
+  .tbd-header-sub {
+    font-size: 10px;
+    color: rgba(255,255,255,0.5);
+    margin-left: auto;
+  }
+  .tbd-list {
+    padding: 12px 16px;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+  }
+  .tbd-chip {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    padding: 4px 10px;
+    border-radius: 4px;
+    font-size: 10px;
+    font-weight: 500;
+    color: white;
+    cursor: pointer;
+    transition: opacity .15s;
+  }
+  .tbd-chip:hover { opacity: 0.8; }
+  .tbd-chip .tbd-dot {
+    width: 6px; height: 6px;
+    border-radius: 50%;
+    background: rgba(255,255,255,0.6);
+    flex-shrink: 0;
+  }
+
+  /* ── Modal ─────────────────────────────────────────────────── */
+  .modal-overlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(10,15,30,0.55);
+    z-index: 1000;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    backdrop-filter: blur(2px);
+  }
+  .modal-overlay.open { display: flex; }
+  .modal {
+    background: white;
+    border-radius: 12px;
+    width: 100%;
+    max-width: 520px;
+    max-height: 85vh;
+    overflow-y: auto;
+    box-shadow: 0 20px 60px rgba(0,0,0,0.25);
+    animation: modalIn .2s ease;
+  }
+  @keyframes modalIn {
+    from { opacity: 0; transform: translateY(12px) scale(0.97); }
+    to   { opacity: 1; transform: translateY(0)   scale(1); }
+  }
+  .modal-top {
+    padding: 20px 22px 16px;
+    border-bottom: 1px solid var(--border);
+    position: relative;
+  }
+  .modal-office-tag {
+    display: inline-block;
+    font-size: 9px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+    text-transform: uppercase;
+    color: white;
+    padding: 3px 9px;
+    border-radius: 3px;
+    margin-bottom: 8px;
+  }
+  .modal-title {
+    font-family: 'DM Serif Display', serif;
+    font-size: 18px;
+    color: var(--navy);
+    line-height: 1.3;
+    padding-right: 28px;
+  }
+  .modal-close {
+    position: absolute;
+    top: 16px; right: 16px;
+    width: 28px; height: 28px;
+    border: none; background: none;
+    font-size: 18px; color: var(--muted);
+    cursor: pointer; border-radius: 50%;
+    display: flex; align-items: center; justify-content: center;
+    transition: background .15s;
+  }
+  .modal-close:hover { background: var(--bg); color: var(--navy); }
+  .modal-body { padding: 16px 22px 20px; }
+  .modal-row {
+    display: flex;
+    gap: 8px;
+    margin-bottom: 10px;
+    align-items: flex-start;
+  }
+  .modal-icon {
+    font-size: 14px;
+    flex-shrink: 0;
+    margin-top: 1px;
+    width: 18px;
+    text-align: center;
+  }
+  .modal-key {
+    font-size: 10px;
+    font-weight: 600;
+    letter-spacing: 0.08em;
+    text-transform: uppercase;
+    color: var(--muted);
+    min-width: 90px;
+    flex-shrink: 0;
+  }
+  .modal-val {
+    font-size: 12px;
+    color: var(--text);
+    line-height: 1.5;
+  }
+  .modal-val a {
+    color: var(--teal);
+    text-decoration: none;
+    word-break: break-all;
+  }
+  .modal-val a:hover { text-decoration: underline; }
+  .modal-divider {
+    height: 1px;
+    background: var(--border);
+    margin: 12px 0;
+  }
+  .attending-badge {
+    display: inline-block;
+    font-size: 10px;
+    font-weight: 600;
+    padding: 3px 9px;
+    border-radius: 12px;
+    color: white;
+  }
+
+  /* ── Stats bar ─────────────────────────────────────────────── */
+  .stats-bar {
+    display: flex;
+    gap: 16px;
+    margin-bottom: 16px;
+    flex-wrap: wrap;
+  }
+  .stat-pill {
+    background: white;
+    border: 1px solid var(--border);
+    border-radius: 20px;
+    padding: 5px 14px;
+    font-size: 11px;
+    color: var(--muted);
+    display: flex;
+    align-items: center;
+    gap: 5px;
+  }
+  .stat-pill strong { color: var(--navy); font-size: 13px; }
+
+  /* ── Responsive ────────────────────────────────────────────── */
+  @media (max-width: 680px) {
+    .cal-header { padding: 16px 14px 0; }
+    .main { padding: 14px; }
+    .toolbar { padding: 10px 14px; gap: 6px; }
+    .cal-cell { min-height: 60px; padding: 4px 3px 6px; }
+    .event-chip { font-size: 8.5px; padding: 1px 4px; }
+    .cal-title { font-size: 17px; }
+  }
+</style>
+</head>
+<body>
+
+<!-- Header -->
+<div class="cal-header">
+  <div class="cal-title-block">
+    <div class="cal-eyebrow">Euromonitor International</div>
+    <div class="cal-title">Industry Calendar <em>FY 26–27</em></div>
+  </div>
+  <nav class="cal-nav" id="monthNav"></nav>
+</div>
+
+<!-- Toolbar -->
+<div class="toolbar">
+  <span class="toolbar-label">Filter by Office</span>
+  <button class="filter-btn filter-all active" data-office="ALL" onclick="setFilter('ALL',this)">
+    <span class="dot" style="background:var(--amber)"></span> All Offices
+  </button>
+  <div class="sep"></div>
+  <div id="officeFilters"></div>
+</div>
+
+<!-- Main -->
+<div class="main">
+  <div class="stats-bar" id="statsBar"></div>
+  <div class="month-nav">
+    <div class="month-arrow" onclick="prevMonth()">&#8249;</div>
+    <div class="month-arrow" onclick="nextMonth()">&#8250;</div>
+    <div class="month-title" id="monthTitle"></div>
+    <span class="month-subtitle" id="monthSubtitle"></span>
+    <span class="event-count-badge" id="monthBadge"></span>
+  </div>
+  <div class="cal-grid">
+    <div class="cal-days-header">
+      <div class="day-name">Sun</div><div class="day-name">Mon</div>
+      <div class="day-name">Tue</div><div class="day-name">Wed</div>
+      <div class="day-name">Thu</div><div class="day-name">Fri</div>
+      <div class="day-name">Sat</div>
+    </div>
+    <div class="cal-weeks" id="calWeeks"></div>
+  </div>
+  <div class="tbd-section" id="tbdSection">
+    <div class="tbd-header">
+      <div class="tbd-header-title">Date TBD</div>
+      <div class="tbd-header-sub" id="tbdCount"></div>
+    </div>
+    <div class="tbd-list" id="tbdList"></div>
+  </div>
+</div>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modalOverlay" onclick="closeModal(event)">
+  <div class="modal" id="modal"></div>
+</div>
+
+<script>
+const OFFICE_COLORS = {
+  'Chicago':     '#2E4057',
+  'London':      '#C0392B',
+  'Sao Paulo':   '#27AE60',
+  'Mexico City': '#E67E22',
+  'Santiago':    '#8E44AD',
+  'Dubai':       '#C9A800',
+  'Cape Town':   '#E05A8A',
+  'Düsseldorf':  '#2E86C1',
+  'Vilnius':     '#16A085',
+  'Bengaluru':   '#E74C3C',
+  'Shanghai':    '#A93226',
+  'Singapore':   '#1ABC9C',
+  'Tokyo':       '#E84393',
+  'Seoul':       '#3498DB',
+  'Other':       '#95A5A6',
+};
+
+const EVENTS = [{"title":"NCA U.S. Coffee Outlook 2026 (Member Exclusive Webinar)","date":"2026-01-28","dateRaw":"28 Jan 2026","office":"Chicago","region":"","industry":"Food, Bevs, and Inhalation","sector":"Hot Drinks","country":"Remote","status":"Confirmed, attendee list provided","attending":"","speakers":"Nik Allen","executive":"Sydney Shields","link":"","topic":"U.S. Coffee Outlook 2026"},{"title":"PLMA Lunch & Learn: Top GCT 2026 (Partner Webinar)","date":"2026-01-29","dateRaw":"29 Jan 2026","office":"Chicago","region":"","industry":"Channels","sector":"Retail and E-commerce","country":"Remote","status":"Confirmed, goal to establish a relationship for future opportunities","attending":"","speakers":"Jorge Zuniga, Carmen Silva","executive":"Sydney Shields","link":"","topic":"Top GCT Trends 2026, tailored to private label audience"},{"title":"CAGNY","date":"2026-02-16","dateRaw":"16-20 Feb","office":"Chicago","region":"","industry":"Multiple","sector":"Multiple","country":"Tampa, FL","status":"No speaking, education focused attendance","attending":"","speakers":"","executive":"Sydney Shields","link":"","topic":""},{"title":"NCA Convention 2026","date":"2026-03-12","dateRaw":"12-14 Mar","office":"Chicago","region":"","industry":"Food, Bevs, and Inhalation","sector":"Hot Drinks","country":"Tampa, FL","status":"Confirmed","attending":"","speakers":"Nik Allen","executive":"Sydney Shields","link":"","topic":"Growth Platforms: Cold Coffee, Functional Beverages, and Changing Consumer Habits"},{"title":"Hosted Event - Insights' Partner Dinner","date":"2026-03-18","dateRaw":"18 Mar 2026","office":"Chicago","region":"","industry":"Multiple","sector":"Multiple","country":"Chicago, IL","status":"Confirmed","attending":"","speakers":"","executive":"Sydney Shields","link":"","topic":""},{"title":"Shoptalk Spring","date":"2026-03-24","dateRaw":"24-26 Mar","office":"Chicago","region":"","industry":"Channels","sector":"Retail and E-commerce","country":"Las Vegas, NV","status":"Confirmed","attending":"","speakers":"Michelle Evans","executive":"Sydney Shields","link":"","topic":"Insights: New Research on Consumer Attitudes and Behaviors"},{"title":"Tissue World Miami","date":"2026-04-22","dateRaw":"22-24 Apr","office":"Chicago","region":"","industry":"Health, Beauty, and Hygiene","sector":"Tissue and Hygiene","country":"Miami, FL","status":"Confirmed, Media Partnership secured","attending":"","speakers":"Liying Qian","executive":"Sydney Shields","link":"","topic":"Global Prospects and Key Trends Shaping the Tissue Industry"},{"title":"FinovateSpring","date":"2026-05-07","dateRaw":"07 May 2026","office":"Chicago","region":"","industry":"Services and E&C","sector":"Payments and Lending","country":"San Diego, CA","status":"Pitched with organizer, followed up, TBD slot and partnership.","attending":"","speakers":"Kendrick Sands","executive":"Sydney Shields","link":"","topic":"Check with Kendrick Sands on latest content"},{"title":"PLMA Amsterdam","date":"2026-05-19","dateRaw":"19-20 May","office":"Chicago","region":"","industry":"Channels","sector":"Retail and E-commerce","country":"Amsterdam, Netherlands","status":"Secured and assigned one complementary pass, Colette McGee to attend","attending":"","speakers":"","executive":"","link":"","topic":""},{"title":"International Dairy Deli Bakery Association (IDDBA)","date":"2026-06-07","dateRaw":"7-9 Jun","office":"Chicago","region":"","industry":"Food, Bevs, and Inhalation","sector":"Food","country":"Orlando, FL","status":"Met Feb 9th, to explore media partnership. Verbally agreed to passes.","attending":"","speakers":"Miri Eliyahu","executive":"Sydney Shields","link":"","topic":"Claims in deli, dairy and bakery"},{"title":"MakeUp in Paris","date":"2026-06-17","dateRaw":"17-18 Jun","office":"Chicago","region":"","industry":"Health, Beauty, and Hygiene","sector":"Beauty and Personal Care","country":"Paris, FR","status":"In contact, awaiting theme confirmations from organizers","attending":"","speakers":"Aishwarya Rajpara","executive":"Sydney Shields","link":"","topic":""},{"title":"World Perfumery Congress","date":"2026-06-23","dateRaw":"23-25 Jun","office":"Chicago","region":"","industry":"Health, Beauty, and Hygiene","sector":"Beauty and Personal Care","country":"Monterey, CA","status":"Confirmed, no media partnership","attending":"","speakers":"Kayla Villena","executive":"Sydney Shields","link":"","topic":"BPC2026 forecast on fragrances"},{"title":"World of Wipes","date":"2026-06-29","dateRaw":"29 Jun- 2 Jul","office":"Chicago","region":"","industry":"Health, Beauty, and Hygiene","sector":"Tissue and Hygiene","country":"Nashville, TN","status":"Media partnership discussed.","attending":"","speakers":"Liying Quian","executive":"Sydney Shields","link":"","topic":"Global Prospects and Key Trends Shaping the Wipes Industry"},{"title":"Cosmoprof North America (Vegas)","date":"2026-07-13","dateRaw":"13-15 Jul","office":"Chicago","region":"","industry":"Health, Beauty, and Hygiene","sector":"Beauty and Personal Care","country":"Las Vegas, NV","status":"TBD, following up with organizers on pitch.","attending":"","speakers":"Leah Boston","executive":"Sydney Shields","link":"","topic":""},{"title":"eTail Boston 2026","date":"2026-08-12","dateRaw":"12 Aug 2026","office":"Chicago","region":"","industry":"Channels","sector":"Retail and E-commerce","country":"Boston, MA","status":"Reached out to BH about speaker topics/availability.","attending":"","speakers":"Bob Hoyler","executive":"Sydney Shields","link":"","topic":""},{"title":"SUPERZOO","date":"2026-08-12","dateRaw":"12-14 Aug","office":"Chicago","region":"","industry":"Food, Bevs, and Inhalation","sector":"Pet Care","country":"Las Vegas, NV","status":"","attending":"","speakers":"Sahiba Puri","executive":"Sydney Shields","link":"","topic":""},{"title":"MoneyLIVE North America","date":"2026-09-14","dateRaw":"14-15 Sep","office":"Chicago","region":"","industry":"Services and E&C","sector":"Payments and Lending","country":"Chicago, IL","status":"","attending":"","speakers":"Kendrick Sands","executive":"Sydney Shields","link":"","topic":""},{"title":"MakeUp in New York","date":"2026-09-16","dateRaw":"16-17 Sep","office":"Chicago","region":"","industry":"Health, Beauty, and Hygiene","sector":"Beauty and Personal Care","country":"New York, NY","status":"","attending":"","speakers":"Kayla Villena","executive":"Sydney Shields","link":"","topic":""},{"title":"Groceryshop","date":"2026-09-22","dateRaw":"22-24 Sep","office":"Chicago","region":"","industry":"Channels","sector":"Retail and E-commerce","country":"Las Vegas, NV","status":"","attending":"","speakers":"Bob Hoyler","executive":"Sydney Shields","link":"","topic":""},{"title":"Cleaning Products US","date":"2026-09-28","dateRaw":"28-30 Sep","office":"Chicago","region":"","industry":"Home and Fashion","sector":"Home Care","country":"TBD","status":"","attending":"","speakers":"Filip Hoffmann","executive":"Sydney Shields","link":"","topic":""},{"title":"Shoptalk Fall","date":"2026-09-29","dateRaw":"29 Sep - 1 Oct","office":"Chicago","region":"","industry":"Channels","sector":"Retail and E-commerce","country":"Nashville, TN","status":"","attending":"","speakers":"Bob Hoyler","executive":"Sydney Shields","link":"","topic":""},{"title":"NACS Show","date":"2026-10-07","dateRaw":"7-9 Oct","office":"Chicago","region":"","industry":"Channels, Bevs","sector":"Retail and E-commerce, Soft Drinks","country":"Las Vegas, NV","status":"","attending":"","speakers":"Bob Hoyler, Howard Telford","executive":"Sydney Shields","link":"","topic":""},{"title":"SupplySide Global","date":"2026-10-26","dateRaw":"26-30 Oct","office":"Chicago","region":"","industry":"Health, Beauty, and Hygiene","sector":"Consumer Health","country":"Las Vegas, NV","status":"","attending":"","speakers":"Matt Oster","executive":"Sydney Shields","link":"","topic":""},{"title":"Hygienix","date":"2026-11-16","dateRaw":"16-19 Nov","office":"Chicago","region":"","industry":"Health, Beauty, and Hygiene","sector":"Tissue and Hygiene","country":"TBD","status":"","attending":"","speakers":"Liying Qian","executive":"Sydney Shields","link":"","topic":"Global Prospects and Key Trends Shaping the Absorbent Hygiene Industry"},{"title":"Snaxpo","date":"2026-04-06","dateRaw":"06 Apr 2026","office":"Chicago","region":"","industry":"Food, Bevs, and Inhalation","sector":"Snacks","country":"Charlotte, NC","status":"","attending":"","speakers":"Melanie Torres Cabrera, Ryan Tuttle","executive":"Sydney Shields","link":"","topic":""},{"title":"Probiota Americas","date":"2026-08-10","dateRaw":"10 Aug 2026","office":"Chicago","region":"","industry":"Health, Beauty, and Hygiene","sector":"Consumer Health","country":"Vancouver, CA","status":"","attending":"","speakers":"Nick Stene","executive":"Sydney Shields","link":"","topic":""},{"title":"Source Fashion","date":"2026-01-11","dateRaw":"11-14 Jan","office":"London","region":"EMEAI","industry":"Luxury and Fashion","sector":"Fashion","country":"London, UK","status":"","attending":"Both","speakers":"Marguerite LeRolland","executive":"Elaine Yeung","link":"","topic":""},{"title":"Finovate Europe","date":"2026-02-10","dateRaw":"10-11 Feb","office":"London","region":"EMEAI","industry":"Services and E&C","sector":"Payments and Lending","country":"London, UK","status":"","attending":"Both","speakers":"Farhat Hanif","executive":"Elaine Yeung","link":"https://go.euromonitor.com/event-how-ai-is-reshaping-commerce.html","topic":"Executive Briefing: From Embedded Finance To Platform Banking"},{"title":"100% Optical","date":"2026-02-28","dateRaw":"28 Feb - 2 Mar","office":"London","region":"EMEAI","industry":"Beauty and Personal Care","sector":"Beauty and Personal Care","country":"London, UK","status":"","attending":"Both","speakers":"Natasha Cazin","executive":"Elaine Yeung","link":"","topic":""},{"title":"London hosted event","date":"2026-03-05","dateRaw":"05 Mar 2026","office":"London","region":"EMEAI","industry":"Multi-industries","sector":"Cross-sectors","country":"London, UK","status":"","attending":"Both","speakers":"Rabia Yasmeen, Jared Koerten & Shane MacGuill","executive":"Elaine Yeung","link":"https://www.in-cosmetics.com/global/en-gb.html","topic":"Beyond search: How AI is reshaping commerce"},{"title":"in-cosmetics global","date":"2026-04-14","dateRaw":"14-16 Apr","office":"London","region":"EMEAI","industry":"Health, Beauty, and Hygiene","sector":"Beauty and Personal Care","country":"Paris, France","status":"","attending":"Both","speakers":"Emilie Hood","executive":"Elaine Yeung","link":"https://www.in-cosmetics.com/global/en-gb.html","topic":"The Longevity Ingredient Opportunity: Signals vs Noise"},{"title":"Wabel London Summit","date":"2026-04-20","dateRaw":"20-22 Apr","office":"London","region":"EMEAI","industry":"Food, Bevs, and Inhalation","sector":"Ingredients and Nutrition","country":"London, UK","status":"","attending":"Both","speakers":"Tom Rees","executive":"Elaine Yeung","link":"https://www.wabel.com/suppliers/freeze-the-competition-with-wabel-in-london/","topic":"Key Trends in Staple Foods for 2026 and Beyond"},{"title":"World Retail Congress","date":"2026-04-27","dateRaw":"27-29 Apr","office":"London","region":"EMEAI","industry":"Channels","sector":"Retail and E-commerce","country":"Berlin, Germany","status":"","attending":"Attending","speakers":"","executive":"Elaine Yeung","link":"https://www.worldretailcongress.com/","topic":""},{"title":"PLMA Amsterdam","date":"2026-05-19","dateRaw":"19-20 May","office":"London","region":"EMEAI","industry":"Channels","sector":"Retail and E-commerce","country":"Amsterdam, Netherlands","status":"","attending":"Attending","speakers":"","executive":"Sydney Shields","link":"https://www.plmainternational.com/events/world-private-label-international-trade-show","topic":"TBD"},{"title":"The Richmond Market Insight Forum UK","date":"2026-06-02","dateRaw":"02 Jun 2026","office":"London","region":"EMEAI","industry":"Multi-industries","sector":"Cross-sectors","country":"London, UK","status":"","attending":"Attending","speakers":"","executive":"Elaine Yeung","link":"https://richmondevents.com/forums/details/ins26","topic":""},{"title":"Money 20/20 Europe","date":"2026-06-02","dateRaw":"2-4 June","office":"London","region":"EMEAI","industry":"Services and E&C","sector":"Payments and Lending","country":"Amsterdam, Netherlands","status":"","attending":"Attending","speakers":"","executive":"Elaine Yeung","link":"https://europe.money2020.com/","topic":""},{"title":"ShopTalk Europe","date":"2026-06-09","dateRaw":"9-11 June","office":"London","region":"EMEAI","industry":"Channels","sector":"Retail and E-commerce","country":"Barcelona, Spain","status":"","attending":"Speaking","speakers":"Michelle Evans","executive":"Elaine Yeung","link":"https://europe.shoptalk.com/home","topic":"Navigating Rapid AI Adoption in Retail"},{"title":"Bridge2Food","date":"2026-06-09","dateRaw":"9-12 June","office":"London","region":"EMEAI","industry":"Food, Bevs, and Inhalation","sector":"Ingredients and Nutrition","country":"Copenhagen, Denmark","status":"","attending":"Speaking","speakers":"Tom Rees","executive":"Elaine Yeung","link":"https://europe.bridge2food.com/","topic":""},{"title":"eTail UK 2026","date":"2026-06-16","dateRaw":"16-17 June","office":"London","region":"EMEAI","industry":"Channels","sector":"Retail and E-commerce","country":"London, UK","status":"","attending":"TBD","speakers":"Farhat Hanif and Nadejda Popova","executive":"Elaine Yeung","link":"https://etailuk.wbresearch.com/","topic":""},{"title":"Source Fashion (Summer)","date":"2026-07-07","dateRaw":"7-9 Jul","office":"London","region":"EMEAI","industry":"Luxury and Fashion","sector":"Fashion","country":"London, UK","status":"","attending":"Both","speakers":"Marguerite LeRolland","executive":"Elaine Yeung","link":"https://www.source-fashion.com/","topic":""},{"title":"Source Fashion Breakfast Roundtable","date":"2026-07-08","dateRaw":"8 Jul","office":"London","region":"EMEAI","industry":"Luxury and Fashion","sector":"Fashion","country":"London, UK","status":"","attending":"Both","speakers":"Marguerite LeRolland","executive":"Elaine Yeung","link":"https://www.source-fashion.com/","topic":""},{"title":"eCommerce Expo","date":"2026-09-24","dateRaw":"24-25 Sep","office":"London","region":"EMEAI","industry":"Channels","sector":"Retail and E-commerce","country":"London, UK","status":"","attending":"TBD","speakers":"Rabia Yasmeen","executive":"Elaine Yeung","link":"https://www.ecommerceexpo.co.uk/","topic":""},{"title":"WTM London","date":"2026-11-03","dateRaw":"3-5 Nov","office":"London","region":"EMEAI","industry":"Services and E&C","sector":"Travel","country":"London, UK","status":"","attending":"Both","speakers":"Nadejda Popova","executive":"Elaine Yeung","link":"https://www.wtm.com/london/en-gb.html","topic":""},{"title":"Global Innovation Forum","date":"2026-11-18","dateRaw":"18-19 Nov","office":"London","region":"EMEAI","industry":"Products","sector":"Innovation","country":"London, UK","status":"","attending":"Both","speakers":"Stella Vatcheva","executive":"Elaine Yeung","link":"https://giflondon.com/","topic":""},{"title":"Santiago Hosted Event: Discounters","date":"2026-01-22","dateRaw":"22 Jan 2026","office":"Santiago","region":"LATAM","industry":"Private Label","sector":"Retail","country":"Santiago, Chile","status":"DELIVERED","attending":"Presenting","speakers":"Pedro Avila","executive":"Cleide","link":"","topic":"Discounters, Warehouse Clubs and Private Label"},{"title":"Luxury Lab Global, Brazil","date":"2026-03-16","dateRaw":"16 Mar 2026","office":"Sao Paulo","region":"LATAM","industry":"Luxury and Fashion","sector":"Luxury, Travel, Food","country":"São Paulo, Brazil","status":"DELIVERED","attending":"Presenting","speakers":"Fflur Roberts","executive":"Cleide","link":"https://luxurylabglobal.com/llg-sao-paulo/","topic":"The New Order of the Luxury Consumer"},{"title":"Santiago Hosted Event: Loyalty","date":"2026-03-17","dateRaw":"17 Mar 2026","office":"Santiago","region":"LATAM","industry":"Loyalty","sector":"Loyalty","country":"Santiago, Chile","status":"DELIVERED","attending":"Presenting","speakers":"Rocio Franco","executive":"Cleide","link":"","topic":"Loyalty"},{"title":"Santiago Hosted Event: Sustainability","date":"2026-03-19","dateRaw":"19 Mar 2026","office":"Santiago","region":"LATAM","industry":"Sustainability","sector":"Sustainability","country":"Santiago, Chile","status":"DELIVERED","attending":"Presenting","speakers":"Jorge Zuniga","executive":"Cleide","link":"","topic":"Sustainability"},{"title":"Tissue Summit Brasil","date":"2026-03-23","dateRaw":"23-24 Mar","office":"Sao Paulo","region":"LATAM","industry":"TH","sector":"TH","country":"Tivoli, São Paulo","status":"","attending":"Presenting","speakers":"Michel Piroutek","executive":"Cleide","link":"https://tissuesummit.com.br/","topic":"A Nova Era de Tissue & Hygiene"},{"title":"Anuga Select Brazil","date":"2026-04-07","dateRaw":"07-09 Apr","office":"Sao Paulo","region":"LATAM","industry":"F&N","sector":"","country":"São Paulo, Brazil","status":"","attending":"Presenting","speakers":"Adriana Murasaki","executive":"Cleide","link":"https://anuga-brazil.com.br/","topic":"Panorama de funcionalidade em alimentos em bebidas"},{"title":"Hosted event Lima, Peru","date":"2026-04-09","dateRaw":"09 Apr 2026","office":"Santiago","region":"LATAM","industry":"Private Label","sector":"Retail","country":"Peru","status":"","attending":"Presenting","speakers":"Pedro Avila","executive":"Cleide","link":"","topic":"Discounters, Warehouse Clubs and Private Label"},{"title":"Ecommerce Day Chile","date":"2026-04-09","dateRaw":"09 Apr 2026","office":"Santiago","region":"LATAM","industry":"Services and E&C","sector":"Retail and E-commerce","country":"Santiago","status":"","attending":"Presenting","speakers":"Paula Goni","executive":"Cleide","link":"https://ecommerceday.cl/2026/","topic":"De buscar a conversar: la IA como nuevo eje de descubrimiento"},{"title":"VTEX Day (Digital Commerce)","date":"2026-04-16","dateRaw":"16-17 Apr","office":"Sao Paulo","region":"LATAM","industry":"Services and E&C","sector":"Retail and E-commerce","country":"São Paulo Expo","status":"","attending":"Presenting","speakers":"Marcel Motta","executive":"Cleide","link":"https://vtexday.vtex.com/","topic":"Câmbio e inflação: estratégias para proteger margens"},{"title":"42nd Expo Antad & Alimentaria 2026","date":"2026-05-19","dateRaw":"19-21 May","office":"Mexico City","region":"LATAM","industry":"Services and E&C","sector":"Retail and E-commerce","country":"Expo Guadalajara, Mexico","status":"","attending":"Presenting","speakers":"Bob Hoyler","executive":"Cleide","link":"https://expoantad.com.mx/","topic":""},{"title":"Fispal Food Service","date":"2026-05-26","dateRaw":"26-29 May","office":"Sao Paulo","region":"LATAM","industry":"F&N","sector":"","country":"São Paulo","status":"","attending":"Presenting","speakers":"Adriana Murasaki","executive":"Cleide","link":"https://www.fispalfoodservice.com.br/","topic":""},{"title":"Fispal Tecnologia","date":"2026-06-16","dateRaw":"16-19 June","office":"Sao Paulo","region":"LATAM","industry":"F&N","sector":"Drinks","country":"São Paulo Expo","status":"","attending":"Presenting","speakers":"Diego Borjas","executive":"Cleide","link":"https://www.fispaltecnologia.com.br/","topic":""},{"title":"Cleaning Products Latin America","date":"2026-06-17","dateRaw":"17-18 June","office":"Santiago","region":"LATAM","industry":"Health, Beauty, and Hygiene","sector":"Home Care","country":"Buenos Aires, Argentina","status":"","attending":"Presenting","speakers":"Jorge Araya","executive":"Cleide","link":"","topic":""},{"title":"Foro Mascotas Pet Food International 2026","date":"2026-06-24","dateRaw":"24-26 June","office":"Mexico City","region":"LATAM","industry":"Pet Care","sector":"F&N","country":"Expo Guadalajara, México","status":"","attending":"Presenting","speakers":"Montse","executive":"Cleide","link":"http://foromascotas.mx/","topic":""},{"title":"Food Ingredients South America - FISA","date":"2026-08-04","dateRaw":"04-06 Aug","office":"Sao Paulo","region":"LATAM","industry":"F&N","sector":"Ingredients","country":"São Paulo Expo","status":"","attending":"Presenting","speakers":"Adriana Murasaki","executive":"Cleide","link":"https://www.figlobal.com/southamerica/en/home.html","topic":""},{"title":"Primer foro ESG LATAM 360°","date":"2026-08-11","dateRaw":"11-13 Aug","office":"Mexico City","region":"LATAM","industry":"Sustainability","sector":"","country":"Querétaro, Mexico","status":"","attending":"Presenting","speakers":"Jorge Zuniga","executive":"Cleide","link":"","topic":""},{"title":"Abastur 2026","date":"2026-08-26","dateRaw":"26-28 Aug","office":"Mexico City","region":"LATAM","industry":"Travel","sector":"","country":"Mexico City","status":"","attending":"Presenting","speakers":"Beatriz Torres / Rocio Franco","executive":"Cleide","link":"https://www.abastur.com/","topic":""},{"title":"Loyalty Marketing (LOMA)","date":"2026-09-02","dateRaw":"02 Sep 2026","office":"Mexico City","region":"LATAM","industry":"Loyalty","sector":"","country":"Mexico City","status":"","attending":"Presenting","speakers":"Rocio Franco","executive":"Cleide","link":"https://www.loyalty-congress.com/","topic":""},{"title":"World Vape - Chile","date":"2026-09-02","dateRaw":"02 Sep 2026","office":"Santiago","region":"LATAM","industry":"Food, Bevs, and Inhalation","sector":"Tobacco","country":"Santiago","status":"","attending":"Both","speakers":"Erwin Henriquez","executive":"Cleide","link":"https://worldvapeshow.com/chile","topic":"World Market for Nicotine"},{"title":"15 Luxury Lab Global","date":"2026-09-08","dateRaw":"08 Sep 2026","office":"Mexico City","region":"LATAM","industry":"Luxury","sector":"","country":"Mexico City","status":"","attending":"Presenting","speakers":"Fflur Roberts","executive":"Cleide","link":"https://luxurylabglobal.com/","topic":""},{"title":"Sustainable Foods Summit – Latin America 2026","date":"2026-11-02","dateRaw":"02 Nov 2026","office":"Santiago","region":"LATAM","industry":"Sustainability","sector":"Cross industry","country":"São Paulo, Brazil","status":"","attending":"Both","speakers":"Jorge Zuniga","executive":"Cleide","link":"https://www.sustainablefoodssummit.com/lamerica/","topic":"Unlocking sustainability opportunities in Packaged Food"},{"title":"ITB Americas 2026","date":"2026-11-10","dateRaw":"10-12 Nov","office":"Mexico City","region":"LATAM","industry":"Travel","sector":"","country":"Expo Guadalajara, México","status":"","attending":"Presenting","speakers":"Rocio Franco","executive":"Cleide","link":"https://www.itb.com/de/americas","topic":""},{"title":"International Coffee Week - Sintercafé","date":"2026-11-11","dateRaw":"11-14 Nov","office":"Mexico City","region":"LATAM","industry":"Food, Bevs, and Inhalation","sector":"Hot Drinks","country":"Costa Rica","status":"","attending":"Presenting","speakers":"Tristan Höver, Rocio Franco, Diego Borjas","executive":"Cleide","link":"https://www.sintercafe.com/","topic":""},{"title":"ShopTalk Luxe","date":"2026-01-27","dateRaw":"27 Jan 2026","office":"Dubai","region":"MEA","industry":"Channels","sector":"Retail and E-commerce","country":"Abu Dhabi","status":"","attending":"Attending","speakers":"","executive":"Alaa","link":"https://luxe.shoptalk.com/","topic":""},{"title":"Paper & Tissue Show 2026","date":"2026-03-31","dateRaw":"31 Mar 2026","office":"Dubai","region":"MEA","industry":"Health, Beauty, and Hygiene","sector":"Tissue and Hygiene","country":"Abu Dhabi","status":"","attending":"Pitching","speakers":"","executive":"Alaa","link":"https://paperoneshow.net/","topic":""},{"title":"World Travel Market Africa","date":"2026-04-13","dateRaw":"13 Apr 2026","office":"Cape Town","region":"MEA","industry":"Travel & Tourism","sector":"Travel","country":"South Africa","status":"","attending":"Pitching","speakers":"Christy Tawii","executive":"Alaa","link":"https://www.wtm.com/africa/en-gb.html","topic":""},{"title":"EVONXT","date":"2026-04-17","dateRaw":"17 Apr 2026","office":"London","region":"Europe","industry":"Nicotine and Cannabis","sector":"Tobacco","country":"Czech Republic","status":"","attending":"Presenting","speakers":"Jose Becerril","executive":"Seren","link":"https://www.evo-nxt.com/","topic":"Innovation, regulation and sustainability in the NGP Era"},{"title":"Vitafoods Europe - hosted event","date":"2026-05-05","dateRaw":"05 May 2026","office":"Bengaluru","region":"EMEAI","industry":"Health, Beauty, and Hygiene","sector":"Nutraceuticals","country":"Spain","status":"","attending":"Presenting","speakers":"Manuel Leckel and Ina Dawer","executive":"Seren","link":"https://www.vitafoods.eu.com/","topic":"Innovation and Ingredient"},{"title":"Vitafoods Europe","date":"2026-05-05","dateRaw":"05 May 2026","office":"Bengaluru","region":"EMEAI","industry":"Health, Beauty, and Hygiene","sector":"Nutraceuticals","country":"Spain","status":"","attending":"Presenting","speakers":"Manuel Leckel and Ina Dawer","executive":"Seren","link":"https://www.vitafoods.eu.com/","topic":"Innovation and Ingredient"},{"title":"BeerEx Africa 2026","date":"2026-05-12","dateRaw":"12 May 2026","office":"Cape Town","region":"MEA","industry":"Food, Bevs, and Inhalation","sector":"Alcoholic Drinks","country":"South Africa","status":"","attending":"Pitching","speakers":"Christopher John Day","executive":"Alaa","link":"https://www.beerex.africa/","topic":""},{"title":"Interzoo","date":"2026-05-12","dateRaw":"12 May 2026","office":"London","region":"Global","industry":"Home Products","sector":"Petcare","country":"Germany","status":"","attending":"Presenting","speakers":"Sahiba Puri, Jana Rude, Rasa Vaiciuniene","executive":"Seren","link":"https://www.interzoo.com/","topic":"macroeconomics, petcare, sustainability"},{"title":"Interzoo - hosted event","date":"2026-05-13","dateRaw":"13 May 2026","office":"London","region":"Global","industry":"Home Products","sector":"Petcare","country":"Germany","status":"","attending":"Presenting","speakers":"Sahiba Puri, Jana Rude","executive":"Seren","link":"https://www.interzoo.com/","topic":"macroeconomics, GCT"},{"title":"II Conference for Detergent Industry","date":"2026-05-19","dateRaw":"19 May 2026","office":"Vilnius","region":"CEE","industry":"Health, Beauty, and Hygiene","sector":"Hygiene","country":"Poland","status":"","attending":"Partnership","speakers":"no speaker","executive":"Seren","link":"","topic":"detergent industry"},{"title":"The Wine Tourism Conference","date":"2026-05-19","dateRaw":"19 May 2026","office":"Cape Town","region":"MEA","industry":"Food, Bevs, and Inhalation","sector":"Alcoholic Drinks","country":"South Africa","status":"","attending":"Pitching","speakers":"Christopher John Day","executive":"Alaa","link":"","topic":""},{"title":"International Conference for Cosmetic Industry","date":"2026-05-20","dateRaw":"20 May 2026","office":"Vilnius","region":"CEE","industry":"Beauty and Personal Care","sector":"Beauty and Personal Care","country":"Poland","status":"","attending":"Presenting","speakers":"Povilas Sugintas","executive":"Seren","link":"","topic":"cosmetics industry"},{"title":"BW Saudi Arabia","date":"2026-05-26","dateRaw":"26 May 2026","office":"Dubai","region":"MEA","industry":"Health, Beauty, and Hygiene","sector":"Beauty","country":"Riyadh","status":"","attending":"Presenting","speakers":"Mehr","executive":"Alaa","link":"https://beautyworld-saudi-arabia.ae.messefrankfurt.com/","topic":"GCT for MEA"},{"title":"International Food Show Africa","date":"2026-06-09","dateRaw":"09 Jun 2026","office":"Cape Town","region":"MEA","industry":"Food, Bevs, and Inhalation","sector":"Food","country":"Tunisia","status":"","attending":"Pitching","speakers":"Christopher John Day","executive":"Alaa","link":"https://www.ifsaafrica.com/","topic":""},{"title":"Cosmetic Business","date":"2026-06-10","dateRaw":"10 Jun 2026","office":"Düsseldorf","region":"Europe","industry":"Health, Beauty, and Hygiene","sector":"Beauty and Personal Care","country":"Germany","status":"","attending":"Presenting","speakers":"Magda Starula","executive":"Seren","link":"https://www.cosmetic-business.com/","topic":"GCT"},{"title":"The Africa Food Show","date":"2026-06-10","dateRaw":"10 Jun 2026","office":"Cape Town","region":"MEA","industry":"Food, Bevs, and Inhalation","sector":"Food","country":"South Africa","status":"","attending":"Pitching","speakers":"Christopher John Day","executive":"Alaa","link":"https://www.theafricafoodshow.com/","topic":""},{"title":"Johannesburg hosted event","date":"2026-06-01","dateRaw":"01 Jun 2026","office":"Cape Town","region":"MEA","industry":"Channels","sector":"Retail and E-commerce","country":"South Africa","status":"","attending":"Presenting","speakers":"","executive":"Alaa","link":"","topic":""},{"title":"International Cannabis Symposium 2026","date":"2026-06-27","dateRaw":"27 Jun 2026","office":"Cape Town","region":"MEA","industry":"Food, Bevs, and Inhalation","sector":"","country":"South Africa","status":"","attending":"Pitching","speakers":"Christopher John Day","executive":"Alaa","link":"https://icscapetown.com/","topic":""},{"title":"Arabian Travel Market","date":"2026-08-17","dateRaw":"17 Aug 2026","office":"Dubai","region":"MEA","industry":"Travel & Tourism","sector":"Travel","country":"Dubai","status":"","attending":"Presenting","speakers":"Marie","executive":"Alaa","link":"https://www.wtm.com/atm/en-gb.html","topic":"Women In Travel"},{"title":"ISM Middle East","date":"2026-09-15","dateRaw":"15 Sep 2026","office":"Dubai","region":"MEA","industry":"Food","sector":"Snacks","country":"Dubai","status":"","attending":"Presenting","speakers":"Monique","executive":"Alaa","link":"https://www.ism-me.com/","topic":"Snacks in MENA"},{"title":"Money 20/20 Middle East","date":"2026-09-14","dateRaw":"14 Sep 2026","office":"Dubai","region":"EMEAI","industry":"Services and E&C","sector":"Travel","country":"Riyadh","status":"","attending":"Pitching","speakers":"tbd","executive":"Alaa","link":"","topic":""},{"title":"Beautyworld Middle East","date":"2026-10-01","dateRaw":"01 Oct 2026","office":"Dubai","region":"MEA","industry":"Health, Beauty, and Hygiene","sector":"Beauty and Personal Care","country":"Dubai","status":"","attending":"Presenting","speakers":"","executive":"Alaa","link":"","topic":""},{"title":"Dubai hosted event","date":"2026-11-26","dateRaw":"26 Nov 2026","office":"Dubai","region":"MEA","industry":"Channels","sector":"Retail and E-commerce","country":"Dubai","status":"","attending":"Presenting","speakers":"","executive":"Alaa","link":"","topic":""},{"title":"11th Craft Beer China Exhibition & Conference","date":"2026-04-07","dateRaw":"07 Apr 2026","office":"Shanghai","region":"APAC","industry":"Food and Drinks","sector":"Alcoholic drinks","country":"Shanghai","status":"","attending":"Presenting","speakers":"Kelly Tang and Harry Han","executive":"Reka","link":"","topic":""},{"title":"Pet Fair Asia","date":"2026-08-05","dateRaw":"05 Aug 2026","office":"Shanghai","region":"APAC","industry":"Pet care","sector":"","country":"Shanghai","status":"","attending":"","speakers":"","executive":"","link":"","topic":""},{"title":"Appliance & Electronics World Expo (AWE) 2026","date":"2026-03-04","dateRaw":"04 Mar 2026","office":"Shanghai","region":"APAC","industry":"Consumer Appliances","sector":"","country":"Shanghai","status":"","attending":"Presenting","speakers":"Loo Wee Teck","executive":"Reka","link":"","topic":""},{"title":"Seoul GCT hosted event","date":"2026-01-29","dateRaw":"29 Jan 2026","office":"Seoul","region":"APAC","industry":"GCT","sector":"","country":"South Korea","status":"completed","attending":"Presenting","speakers":"Sunny Moon","executive":"Reka","link":"","topic":""},{"title":"Health Foods & Supplements Expo","date":"2026-02-25","dateRaw":"25 Feb 2026","office":"Tokyo","region":"APAC","industry":"Consumer Health","sector":"","country":"Japan","status":"","attending":"","speakers":"","executive":"","link":"","topic":""},{"title":"AI Wellness Summit","date":"2026-01-06","dateRaw":"6-7 Jan","office":"Singapore","region":"APAC","industry":"Beauty, wellness","sector":"","country":"Singapore","status":"","attending":"Presenting","speakers":"Hiromi Yamaguchi","executive":"Reka","link":"","topic":""},{"title":"Dejima Webinar","date":"2026-02-22","dateRaw":"22 Feb 2026","office":"Tokyo","region":"APAC","industry":"E-commerce","sector":"","country":"Japan","status":"","attending":"Presenting","speakers":"","executive":"","link":"","topic":""},{"title":"Tokyo Partnership event","date":"2026-02-26","dateRaw":"26 Feb 2026","office":"Tokyo","region":"APAC","industry":"E-commerce","sector":"","country":"Japan","status":"","attending":"Presenting","speakers":"","executive":"","link":"","topic":""},{"title":"2026 APAC CFS webinar","date":"2026-03-17","dateRaw":"17 Mar 2026","office":"Singapore","region":"APAC","industry":"Consumer foodservice","sector":"","country":"Singapore","status":"","attending":"Presenting","speakers":"Nat and Pete","executive":"","link":"","topic":""},{"title":"FABEX Japan - Food and Beverages Expo","date":"2026-04-15","dateRaw":"15 Apr 2026","office":"Tokyo","region":"APAC","industry":"Food and Drinks","sector":"","country":"Japan","status":"","attending":"","speakers":"Megumi/Tomomi","executive":"Reka","link":"https://www.fabex.jp/","topic":""},{"title":"FHA Singapore","date":"2026-04-21","dateRaw":"21-24 Apr","office":"Singapore","region":"APAC","industry":"Food and Beverage","sector":"","country":"Singapore","status":"","attending":"Presenting","speakers":"Nathanael Lim, Emil Fazira","executive":"","link":"","topic":""},{"title":"PATA Global Summit","date":"2026-05-03","dateRaw":"3 May","office":"Singapore","region":"APAC","industry":"Services and payments","sector":"Travel","country":"South Korea","status":"","attending":"Presenting","speakers":"Stephen Dutton","executive":"","link":"","topic":""},{"title":"Next Asian Wave webinar","date":"2026-05-07","dateRaw":"7 May","office":"Singapore","region":"APAC","industry":"Payments, Retail, Food and Beverage","sector":"","country":"Singapore","status":"","attending":"","speakers":"Nathanael Lim and Pete Wang","executive":"","link":"","topic":""},{"title":"World of Coffee","date":"2026-05-07","dateRaw":"7-9 May","office":"Singapore","region":"APAC","industry":"Beverages","sector":"","country":"Thailand","status":"","attending":"","speakers":"Nathanael Lim","executive":"Reka","link":"https://asia.worldofcoffee.org/","topic":"How Gen Z consumers are reshaping the coffee landscape"},{"title":"Fi Asia - Vietnam","date":"2026-05-13","dateRaw":"13-15 May","office":"Singapore","region":"APAC","industry":"Food and Beverage","sector":"","country":"Vietnam","status":"","attending":"","speakers":"","executive":"","link":"","topic":""},{"title":"Cosmobeauty Seoul","date":"2026-05-27","dateRaw":"27-29 May","office":"Singapore","region":"APAC","industry":"Beauty and personal care","sector":"","country":"South Korea","status":"","attending":"Presenting","speakers":"tbc","executive":"Reka","link":"","topic":""},{"title":"Thaifex","date":"2026-05-28","dateRaw":"28 May","office":"Singapore","region":"APAC","industry":"Food and Beverage","sector":"","country":"Thailand","status":"","attending":"Presenting","speakers":"","executive":"Reka","link":"","topic":"Functional food, clean label"},{"title":"Cosmoprof Asean","date":"2026-06-24","dateRaw":"24-26 Jun","office":"Singapore","region":"APAC","industry":"Beauty and personal care","sector":"","country":"Thailand","status":"","attending":"","speakers":"","executive":"","link":"","topic":""},{"title":"JFEX Premium Food Expo - Summer","date":"2026-06-24","dateRaw":"24 Jun 2026","office":"Tokyo","region":"APAC","industry":"Food and Drinks","sector":"","country":"Japan","status":"","attending":"","speakers":"Megumi/Tomomi","executive":"Reka","link":"https://www.jfex.jp/","topic":"Ageing population in APAC?"},{"title":"Incos Korea","date":"2026-07-03","dateRaw":"3-5 Jul","office":"Seoul","region":"APAC","industry":"Beauty and personal care","sector":"","country":"South Korea","status":"","attending":"Presenting","speakers":"tbc","executive":"","link":"","topic":""},{"title":"Growth Asia","date":"2026-07-08","dateRaw":"8-10 Jul","office":"Singapore","region":"APAC","industry":"Food and Beverage","sector":"","country":"Singapore","status":"","attending":"","speakers":"Nat/Emil","executive":"Reka","link":"","topic":"Infant & childhood nutrition, Healthy ageing"},{"title":"Fi Indonesia","date":"2026-09-16","dateRaw":"16-18 Sep","office":"Singapore","region":"APAC","industry":"Food and Beverage","sector":"","country":"Indonesia","status":"","attending":"","speakers":"Nat/Emil","executive":"","link":"","topic":""},{"title":"Vitafoods Asia","date":"2026-09-17","dateRaw":"17-19 Sep","office":"Singapore","region":"APAC","industry":"Food and Beverage","sector":"","country":"Thailand","status":"","attending":"","speakers":"Nat/Emil","executive":"","link":"","topic":""},{"title":"Asia-Pacific Retailers Convention (APRCE 2026)","date":"2026-10-07","dateRaw":"7-10 Oct","office":"Singapore","region":"APAC","industry":"Retail","sector":"","country":"Japan","status":"","attending":"","speakers":"Sean","executive":"Reka","link":"https://aprce2026.com/","topic":"Global Overview, New Concepts in Retail"},{"title":"HKTDC Electronics and Appliances Fair","date":"2026-10-13","dateRaw":"13-16 Oct","office":"Singapore","region":"APAC","industry":"Toys and Games","sector":"","country":"Hong Kong","status":"","attending":"","speakers":"Loo Wee Teck","executive":"Reka","link":"","topic":""},{"title":"CEATEC 2026","date":"2026-10-13","dateRaw":"13 Oct 2026","office":"Tokyo","region":"APAC","industry":"Consumer Appliances","sector":"","country":"Japan","status":"","attending":"","speakers":"Taro","executive":"Reka","link":"","topic":""},{"title":"HI Japan","date":"2026-10-16","dateRaw":"16 Oct 2026","office":"Tokyo","region":"APAC","industry":"Food","sector":"","country":"Japan","status":"","attending":"","speakers":"Megumi","executive":"Reka","link":"","topic":""},{"title":"Incos Asia","date":"2026-11-03","dateRaw":"03 Nov 2026","office":"Singapore","region":"APAC","industry":"Beauty and personal care","sector":"","country":"Thailand","status":"","attending":"","speakers":"Hiro/ Hiro's team","executive":"Reka","link":"","topic":""},{"title":"APAC Agri-food Innovation Summit","date":"2026-11-01","dateRaw":"01 Nov 2026","office":"Singapore","region":"APAC","industry":"Food and Beverage","sector":"","country":"Singapore","status":"","attending":"","speakers":"","executive":"Reka","link":"","topic":""},{"title":"JFEX Premium Food Expo - Winter","date":"2026-11-11","dateRaw":"11 Nov 2026","office":"Tokyo","region":"APAC","industry":"Food and Drinks","sector":"","country":"Japan","status":"","attending":"","speakers":"Tomomi/Megumi","executive":"Reka","link":"","topic":""},{"title":"Drink Japan","date":"2026-11-18","dateRaw":"18 Nov 2026","office":"Tokyo","region":"APAC","industry":"Beverage","sector":"","country":"Japan","status":"","attending":"","speakers":"Tomomi","executive":"Reka","link":"https://www.drinkjapan.jp/","topic":""},{"title":"HKTDC Toys and Games Fair","date":"2026-01-02","dateRaw":"02 Jan 2026","office":"Singapore","region":"APAC","industry":"Toys and Games","sector":"","country":"Hong Kong","status":"","attending":"","speakers":"Loo Wee Teck","executive":"Reka","link":"","topic":""}];
+
+// ── State ──────────────────────────────────────────────────────────────────
+let currentYear  = 2026;
+let currentMonth = 0; // 0 = Jan
+let activeFilter = 'ALL';
+
+const MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const OFFICES = Object.keys(OFFICE_COLORS);
+
+// ── Build office filter buttons ────────────────────────────────────────────
+function buildFilters() {
+  const container = document.getElementById('officeFilters');
+  container.style.display = 'flex';
+  container.style.gap = '6px';
+  container.style.flexWrap = 'wrap';
+  OFFICES.forEach(office => {
+    const evCount = EVENTS.filter(e => e.office === office).length;
+    if (evCount === 0) return;
+    const btn = document.createElement('button');
+    btn.className = 'filter-btn inactive';
+    btn.dataset.office = office;
+    btn.innerHTML = `<span class="dot" style="background:${OFFICE_COLORS[office]}"></span>${office}`;
+    btn.onclick = () => setFilter(office, btn);
+    container.appendChild(btn);
+  });
+}
+
+function setFilter(office, btn) {
+  activeFilter = office;
+  // Reset all
+  document.querySelectorAll('.filter-btn').forEach(b => {
+    const isAll = b.dataset.office === 'ALL';
+    b.className = 'filter-btn ' + (isAll ? 'filter-all ' : '') + 'inactive';
+  });
+  // Activate selected
+  if (btn) {
+    btn.className = 'filter-btn active' + (office === 'ALL' ? ' filter-all' : '');
+  }
+  renderCalendar();
+}
+
+// ── Build month nav tabs ───────────────────────────────────────────────────
+function buildMonthNav() {
+  const nav = document.getElementById('monthNav');
+  nav.innerHTML = '';
+  for (let m = 0; m < 12; m++) {
+    const btn = document.createElement('button');
+    btn.className = 'nav-btn' + (m === currentMonth ? ' active' : '');
+    btn.textContent = MONTHS[m].slice(0,3);
+    btn.onclick = () => { currentMonth = m; renderAll(); };
+    nav.appendChild(btn);
+  }
+}
+
+function prevMonth() {
+  if (currentMonth === 0) { currentMonth = 11; currentYear--; }
+  else currentMonth--;
+  renderAll();
+}
+function nextMonth() {
+  if (currentMonth === 11) { currentMonth = 0; currentYear++; }
+  else currentMonth++;
+  renderAll();
+}
+
+// ── Filter events ──────────────────────────────────────────────────────────
+function filteredEvents() {
+  if (activeFilter === 'ALL') return EVENTS;
+  return EVENTS.filter(e => e.office === activeFilter);
+}
+
+// ── Render calendar ────────────────────────────────────────────────────────
+function renderCalendar() {
+  const fEvents = filteredEvents();
+  const year = currentYear, month = currentMonth;
+
+  // Month title
+  document.getElementById('monthTitle').textContent = MONTHS[month] + ' ' + year;
+  const mCount = fEvents.filter(e => e.date && e.date.startsWith(`${year}-${String(month+1).padStart(2,'0')}`)).length;
+  document.getElementById('monthBadge').textContent = mCount + ' event' + (mCount !== 1 ? 's' : '');
+
+  // Build day grid
+  const firstDay = new Date(year, month, 1).getDay();
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  const daysInPrev  = new Date(year, month, 0).getDate();
+  const today = new Date();
+  const todayStr = `${today.getFullYear()}-${String(today.getMonth()+1).padStart(2,'0')}-${String(today.getDate()).padStart(2,'0')}`;
+
+  // Map events to dates
+  const evByDate = {};
+  fEvents.forEach(ev => {
+    if (!ev.date) return;
+    const d = ev.date;
+    if (!evByDate[d]) evByDate[d] = [];
+    evByDate[d].push(ev);
+  });
+
+  const weeks = document.getElementById('calWeeks');
+  weeks.innerHTML = '';
+
+  let day = 1 - firstDay;
+  while (day <= daysInMonth) {
+    const weekDiv = document.createElement('div');
+    weekDiv.className = 'cal-week';
+    for (let wd = 0; wd < 7; wd++, day++) {
+      const cell = document.createElement('div');
+      cell.className = 'cal-cell';
+      let cellDate = '', cellDay = '';
+      if (day < 1) {
+        cell.classList.add('other-month');
+        cellDay = daysInPrev + day;
+        cellDate = `${year}-${String(month).padStart(2,'0') || '12'}-${String(cellDay).padStart(2,'0')}`;
+      } else if (day > daysInMonth) {
+        cell.classList.add('other-month');
+        cellDay = day - daysInMonth;
+        const nm = month + 2 > 12 ? 1 : month + 2;
+        const ny = month + 2 > 12 ? year + 1 : year;
+        cellDate = `${ny}-${String(nm).padStart(2,'0')}-${String(cellDay).padStart(2,'0')}`;
+      } else {
+        cellDay = day;
+        cellDate = `${year}-${String(month+1).padStart(2,'0')}-${String(day).padStart(2,'0')}`;
+        if (cellDate === todayStr) cell.classList.add('today');
+      }
+
+      const numDiv = document.createElement('div');
+      numDiv.className = 'day-num';
+      numDiv.textContent = cellDay;
+      cell.appendChild(numDiv);
+
+      // Add events
+      const dayEvents = evByDate[cellDate] || [];
+      const maxShow = 3;
+      dayEvents.slice(0, maxShow).forEach(ev => {
+        const chip = document.createElement('div');
+        chip.className = 'event-chip';
+        chip.style.background = OFFICE_COLORS[ev.office] || '#95A5A6';
+        chip.textContent = ev.title;
+        chip.title = ev.title;
+        chip.onclick = () => openModal(ev);
+        cell.appendChild(chip);
+      });
+      if (dayEvents.length > maxShow) {
+        const more = document.createElement('div');
+        more.className = 'more-chip';
+        more.textContent = `+${dayEvents.length - maxShow} more`;
+        more.onclick = () => showDayEvents(cellDate, dayEvents);
+        cell.appendChild(more);
+      }
+      weekDiv.appendChild(cell);
+    }
+    weeks.appendChild(weekDiv);
+  }
+
+  // TBD section
+  const tbdEvents = fEvents.filter(e => !e.date);
+  document.getElementById('tbdCount').textContent = tbdEvents.length + ' events pending dates';
+  const tbdList = document.getElementById('tbdList');
+  tbdList.innerHTML = '';
+  tbdEvents.forEach(ev => {
+    const chip = document.createElement('div');
+    chip.className = 'tbd-chip';
+    chip.style.background = OFFICE_COLORS[ev.office] || '#95A5A6';
+    chip.innerHTML = `<span class="tbd-dot"></span>${ev.title}`;
+    chip.title = `${ev.office} · ${ev.dateRaw || 'TBD'}`;
+    chip.onclick = () => openModal(ev);
+    tbdList.appendChild(chip);
+  });
+  document.getElementById('tbdSection').style.display = tbdEvents.length ? 'block' : 'none';
+
+  // Stats
+  renderStats(fEvents);
+}
+
+function renderStats(fEvents) {
+  const total = fEvents.length;
+  const withDate = fEvents.filter(e => e.date).length;
+  const offices = [...new Set(fEvents.map(e => e.office))].length;
+  const bar = document.getElementById('statsBar');
+  bar.innerHTML = `
+    <div class="stat-pill">🗓 <strong>${total}</strong> total events</div>
+    <div class="stat-pill">📍 <strong>${withDate}</strong> scheduled</div>
+    <div class="stat-pill">🌍 <strong>${offices}</strong> office cities</div>
+  `;
+}
+
+// ── Modal ──────────────────────────────────────────────────────────────────
+function openModal(ev) {
+  const color = OFFICE_COLORS[ev.office] || '#95A5A6';
+  const attendBg = ev.attending && ev.attending.toLowerCase().includes('present') ? '#0e7c7b'
+    : ev.attending && ev.attending.toLowerCase().includes('speak') ? '#e8a020'
+    : '#243457';
+
+  function row(icon, key, val, isLink) {
+    if (!val) return '';
+    const valHtml = isLink ? `<a href="${val}" target="_blank" rel="noopener">${val}</a>` : val;
+    return `<div class="modal-row">
+      <span class="modal-icon">${icon}</span>
+      <span class="modal-key">${key}</span>
+      <span class="modal-val">${valHtml}</span>
+    </div>`;
+  }
+
+  document.getElementById('modal').innerHTML = `
+    <div class="modal-top">
+      <div class="modal-office-tag" style="background:${color}">${ev.office}${ev.region ? ' · ' + ev.region : ''}</div>
+      <div class="modal-title">${ev.title}</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      ${row('📅','Date', ev.dateRaw || 'TBD')}
+      ${row('🌍','Location', ev.country)}
+      ${row('🏭','Industry', [ev.industry, ev.sector].filter(Boolean).join(' · '))}
+      ${ev.attending ? `<div class="modal-row"><span class="modal-icon">🎤</span><span class="modal-key">Role</span><span class="modal-val"><span class="attending-badge" style="background:${attendBg}">${ev.attending}</span></span></div>` : ''}
+      ${row('👤','Speakers', ev.speakers)}
+      ${row('🏢','Executive', ev.executive)}
+      ${ev.status ? `<div class="modal-divider"></div>${row('📋','Status', ev.status)}` : ''}
+      ${ev.topic ? `${row('💡','Topic', ev.topic)}` : ''}
+      ${ev.link && ev.link.startsWith('http') ? `<div class="modal-divider"></div>${row('🔗','Link', ev.link, true)}` : ''}
+    </div>
+  `;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function showDayEvents(dateStr, events) {
+  const d = new Date(dateStr + 'T00:00:00');
+  const label = d.toLocaleDateString('en-GB', {day:'numeric', month:'long', year:'numeric'});
+  document.getElementById('modal').innerHTML = `
+    <div class="modal-top">
+      <div class="modal-office-tag" style="background:var(--navy)">📅 ${label}</div>
+      <div class="modal-title">${events.length} Events</div>
+      <button class="modal-close" onclick="closeModal()">✕</button>
+    </div>
+    <div class="modal-body">
+      ${events.map(ev => `
+        <div style="display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--border);cursor:pointer;" onclick="openModal(${JSON.stringify(ev).replace(/"/g,'&quot;')})">
+          <div style="width:10px;height:10px;border-radius:50%;background:${OFFICE_COLORS[ev.office]||'#95A5A6'};flex-shrink:0"></div>
+          <div>
+            <div style="font-size:12px;font-weight:600;color:var(--navy)">${ev.title}</div>
+            <div style="font-size:10px;color:var(--muted)">${ev.office} · ${ev.country}</div>
+          </div>
+        </div>
+      `).join('')}
+    </div>
+  `;
+  document.getElementById('modalOverlay').classList.add('open');
+}
+
+function closeModal(e) {
+  if (!e || e.target === document.getElementById('modalOverlay')) {
+    document.getElementById('modalOverlay').classList.remove('open');
+  }
+}
+
+// ── Init ───────────────────────────────────────────────────────────────────
+function renderAll() {
+  buildMonthNav();
+  renderCalendar();
+}
+
+buildFilters();
+// Start on current month or first month with events
+const today = new Date();
+currentYear  = today.getFullYear() >= 2026 ? today.getFullYear() : 2026;
+currentMonth = today.getFullYear() >= 2026 ? today.getMonth() : 0;
+renderAll();
+</script>
+</body>
+</html>
